@@ -48,15 +48,12 @@ function ProductRow({ product }: ProductRowProps) {
 
 function ProductTable({ products }: ProductTableProps) {
 
-  const rows: Product[] = [];
-  let lastCategory = null;
+  const rows: React.ReactNode[] = [];
+  let lastCategory: string | null = null;
 
   products.forEach((product) => {
     if (product.category !== lastCategory) {
-      rows.push(
-        <ProductCategoryRow
-          category={product.category}
-          key={product.category} />
+      rows.push(<ProductCategoryRow category={product.category} key={product.category} />
       );
     }
     rows.push(
@@ -77,6 +74,28 @@ function ProductTable({ products }: ProductTableProps) {
       </thead>
       <tbody>{rows}</tbody>
     </table>
+  );
+}
+
+function SearchBar() {
+  return (
+    <form>
+      <input type="text" placeholder="Search..." />
+      <label>
+        <input type="checkbox" />
+        {' '}
+        Only show products in stock
+      </label>
+    </form>
+  );
+}
+
+function FilterableProductTable({ products }: ProductTableProps) {
+  return (
+    <div>
+      <SearchBar />
+      <ProductTable products={products} />
+    </div>
   )
 }
 
@@ -89,17 +108,11 @@ const PRODUCTS: Product[] = [
   { category: "Vegetables", price: "$1", stocked: true, name: "Peas" }
 ]
 
-function App() {
-
-
+export default function App() {
   return (
-    <>
-
-    </>
+    <FilterableProductTable products={PRODUCTS} />
   )
 }
-
-export default App
 
 
 // function showList(): Product[] {
