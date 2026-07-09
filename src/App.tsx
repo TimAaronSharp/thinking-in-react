@@ -9,6 +9,10 @@ interface Product {
   name: string;
 }
 
+interface FilterableProductTableProps {
+  products: Product[];
+}
+
 interface ProductCategoryRowProps {
   category: string;
 }
@@ -19,8 +23,34 @@ interface ProductRowProps {
 
 interface ProductTableProps {
   products: Product[];
+  filterText: string;
+  inStockOnly: boolean;
 }
 
+interface SearchBarProps {
+  filterText: string;
+  inStockOnly: boolean;
+  onFilterTextChange: React.Dispatch<React.SetStateAction<string>>;
+  onInStockOnlyChange: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+function FilterableProductTable({ products }: FilterableProductTableProps) {
+  const [filterText, setFilterText] = useState('');
+  const [inStockOnly, setInStockOnly] = useState(false);
+
+  return (
+    <div>
+      <SearchBar filterText={filterText}
+        inStockOnly={inStockOnly}
+        onFilterTextChange={setFilterText}
+        onInStockOnlyChange={setInStockOnly} />
+      <ProductTable
+        products={products}
+        filterText={filterText}
+        inStockOnly={inStockOnly} />
+    </div>
+  )
+}
 
 function ProductCategoryRow({ category }: ProductCategoryRowProps) {
   return (
@@ -46,12 +76,24 @@ function ProductRow({ product }: ProductRowProps) {
   );
 }
 
-function ProductTable({ products }: ProductTableProps) {
+function ProductTable({ products, filterText, inStockOnly }: ProductTableProps) {
 
   const rows: React.ReactNode[] = [];
   let lastCategory: string | null = null;
 
   products.forEach((product) => {
+    // Checks to see if the search text matches any of the products. -1 index means it didn't find anything. .indexOf() returns the index where your search started at. ie) Apple. If you search for "app", .indexOf() returns 0. If you search "le" it returns 3.
+    if (
+      product.name.toLowerCase().indexOf(
+        filterText.toLowerCase()
+      ) === -1
+    ) {
+      return;
+    }
+    // Checks for failure. If inStockOnly checkbox is checked and an item is out of stock it returns.
+    if (inStockOnly && !product.stocked) {
+      return;
+    }
     if (product.category !== lastCategory) {
       rows.push(<ProductCategoryRow category={product.category} key={product.category} />
       );
@@ -77,26 +119,17 @@ function ProductTable({ products }: ProductTableProps) {
   );
 }
 
-function SearchBar() {
+function SearchBar({ filterText, inStockOnly, onFilterTextChange, onInStockOnlyChange }: SearchBarProps) {
   return (
     <form>
-      <input type="text" placeholder="Search..." />
+      <input type="text" value={filterText} placeholder="Search..." onChange={(e) => onFilterTextChange(e.target.value)} />
       <label>
-        <input type="checkbox" />
+        <input type="checkbox" onChange={(e) => onInStockOnlyChange(e.target.checked)} />
         {' '}
         Only show products in stock
       </label>
     </form>
   );
-}
-
-function FilterableProductTable({ products }: ProductTableProps) {
-  return (
-    <div>
-      <SearchBar />
-      <ProductTable products={products} />
-    </div>
-  )
 }
 
 const PRODUCTS: Product[] = [
