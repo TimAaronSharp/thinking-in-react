@@ -1,6 +1,19 @@
-// import type { Product } from "../interfaces/Types.ts";
-// import * as Data from '../data/JSONData.ts'
-// // TODO Will need to make product a specific item from that array.
-// const productItem: Product = Data.produceList
-// function ProductRow({ productItem }) {
-// }
+import type { Product } from "../interfaces/Product.ts";
+
+interface ProductRowProps {
+  product: Product;
+}
+
+export function ProductRow({ product }: ProductRowProps) {
+  const name = product.stocked ? product.name :
+    <span style={{ color: 'red' }}>
+      {product.name}
+    </span>;
+
+  return (
+    <tr>
+      <td>{name}</td>
+      <td>{product.price}</td>
+    </tr>
+  );
+}

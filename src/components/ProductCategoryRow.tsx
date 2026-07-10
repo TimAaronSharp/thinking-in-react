@@ -1,14 +1,14 @@
 
-// interface ProductCategoryRowProps {
-//   category: string;
-// }
+interface ProductCategoryRowProps {
+  category: string;
+}
 
-// function ProductCategoryRow({ category }: ProductCategoryRowProps) {
-//   return (
-//     <tr>
-//       <th colSpan={2}>
-//         {category}
-//       </th>
-//     </tr>
-//   );
-// }
+export function ProductCategoryRow({ category }: ProductCategoryRowProps) {
+  return (
+    <tr>
+      <th colSpan={2}>
+        {category}
+      </th>
+    </tr>
+  );
+}
