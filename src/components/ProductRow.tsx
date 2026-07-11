@@ -11,7 +11,7 @@ export function ProductRow({ product }: ProductRowProps) {
     </span>;
 
   return (
-    <tr>
+    <tr data-testId="product-row">
       <td>{name}</td>
       <td>{product.price}</td>
     </tr>
